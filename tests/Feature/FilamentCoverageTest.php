@@ -17,14 +17,16 @@ use Liberu\Accounting\GeneralLedgerFilament\Resources\JournalResource\Pages\List
 
 it('registers and configures accounting-general-ledger-filament filament resources', function (): void {
     $provider = $this->app->register(GeneralLedgerFilamentServiceProvider::class, force: true);
-    if (method_exists($provider, 'boot')) { $provider->boot(); }
+    if (method_exists($provider, 'boot')) {
+        $provider->boot();
+    }
     $plugin = GeneralLedgerFilamentPlugin::make();
     $panel = Panel::make()->id('test-gl');
     $plugin->register($panel);
     $plugin->boot($panel);
     expect($plugin->getId())->toBeString()->not->toBeEmpty();
 
-    $host = new ListJournals;
+    $host = new ListJournals();
     expect(JournalResource::getPages())->toBeArray();
     expect(JournalResource::getEloquentQuery())->toBeInstanceOf(Builder::class);
     expect(JournalResource::form(Schema::make($host)))->toBeInstanceOf(Schema::class);
@@ -35,7 +37,7 @@ it('registers and configures accounting-general-ledger-filament filament resourc
     $cash = Account::query()->create(['legal_entity_id' => $entity->getKey(), 'code' => '1000', 'name' => 'Cash', 'type' => 'asset', 'normal_balance' => 'debit']);
     $rev = Account::query()->create(['legal_entity_id' => $entity->getKey(), 'code' => '4000', 'name' => 'Revenue', 'type' => 'revenue', 'normal_balance' => 'credit']);
 
-    $page = new CreateJournal;
+    $page = new CreateJournal();
     $journal = Closure::bind(fn () => $this->handleRecordCreation([
         'book_id' => $book->getKey(),
         'entry_date' => '2026-01-15',
